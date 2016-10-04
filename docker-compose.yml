@@ -1,0 +1,45 @@
+    version: '2'
+
+    networks:
+      blogaboutit:
+
+    services:
+      app:
+        image: seamyd/blogaboutit
+        build: .
+        container_name: blogaboutit-app
+        networks:
+          - blogaboutit
+        environment:
+          NODE_ENV: production
+        depends_on:
+          - db
+        # ports:
+        #   - "2368:2368"
+        restart: always
+      
+      nginx:
+        image: seamyd/blogaboutit-nginx
+        container_name: blogaboutit-nginx
+        networks:
+          - blogaboutit
+        ports:
+          - "80:80"
+        depends_on:
+          - app
+        restart: always
+
+      db:
+        image: "mysql:5.7.15"
+        container_name: blogaboutit-mysql
+        networks:
+          - blogaboutit
+        environment:
+          MYSQL_ROOT_PASSWORD: ditismijnsuperveiligwachtwoord
+          MYSQL_USER: amaes
+          MYSQL_PASSWORD: ditismijnveiligwachtwoord
+        # ports:
+        #   - "3306:3306"
+        volumes:
+          - /Users/amaes/.DATA/MYSQL/5.7.15:/var/lib/mysql
+        restart: always
